@@ -24,7 +24,7 @@ export async function main() {
     app.use(cors());
     app.disable("x-powered-by");
 
-    app.use('api/customer', NewCustomerAPI(customerController));
+    app.use('/api/customer', NewCustomerAPI(customerController));
 
     app.listen(PORT, ()=>{
         console.log('Server running!');
