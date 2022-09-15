@@ -8,9 +8,11 @@ export class CustomerModel {
 
     private col_customer = this.db.collection('customer');
 
-    async ListCustomer () {
-        const docs = await this.col_customer.find().toArray();
-        return docs;
+    async ListCustomer (filter:any,perPage:number, page:number) {
+        const docs = await this.col_customer.find(filter).skip((perPage * page) - perPage).limit(perPage).toArray();
+        const count = await this.col_customer.find().count();
+        const totalPage = Math.ceil(count/perPage);
+        return {docs:docs, count: count, totalPage:totalPage};
     }
 
     async GetCustomer (_id:string){

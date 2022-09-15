@@ -1,17 +1,27 @@
 import { CustomerController } from './customer.controller';
 import * as express from 'express';
 import { CustomerSchema } from './customer';
+import { count } from 'console';
 
 export function NewCustomerAPI(customerController: CustomerController){
     const router = express.Router();
 
     router.get('/list', async(req, res)=>{
-        const docs = await customerController.ListCustomer();
+        let filter = {};
+        if(req.query.NameCTV){
+            const NameCTV = req.query.NameCTV;
+            filter = {NameCTV};
+        }
+        const perPage = 2;
+        const pages = req.query.page || 1;
+        const docs = await customerController.ListCustomer(filter, perPage, +pages);
+        // const totalProduct = count(docs);
         res.json(docs);
     });
 
     router.post('/create', async(req, res)=>{
         const params : CustomerSchema.CreateCustomerParams= {
+            linkfb: req.body.linkfb,
             NameCTV: req.body.NameCTV,
             Department: req.body.Department,
             Specialized: req.body.Specialized
@@ -23,6 +33,7 @@ export function NewCustomerAPI(customerController: CustomerController){
 
     router.post('/update/:_id', async(req, res)=>{
         const params : CustomerSchema.UpdateCustomerParams= {
+            linkfb: req.body.linkfb,
             Department: req.body.Department,
             Specialized: req.body.Specialized
         };

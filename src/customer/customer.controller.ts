@@ -7,8 +7,10 @@ export class CustomerController {
 
     async init (){}
 
-    async ListCustomer (){
-        return this.model.ListCustomer();
+    async ListCustomer (filter:any, perPage:number, page:number){
+        const perPages = perPage;
+        const pages = page;
+        return this.model.ListCustomer(filter, perPages, pages);
     }
 
     async GetCustomer(_id:string){
@@ -21,6 +23,7 @@ export class CustomerController {
         const nowFormat = now.format('DD/MM/YYYY');
         const customer : CustomerSchema.Customer= {
             _id: CustomerSchema.Generate.NewCustomerId(),
+            linkfb:params.linkfb,
             NameCTV: params.NameCTV,
             Department: params.Department,
             Specialized: params.Specialized,
