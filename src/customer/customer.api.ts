@@ -12,10 +12,7 @@ export function NewCustomerAPI(customerController: CustomerController){
             const NameCTV = req.query.NameCTV;
             filter = {NameCTV};
         }
-        const perPage = 2;
-        const pages = req.query.page || 1;
-        const docs = await customerController.ListCustomer(filter, perPage, +pages);
-        // const totalProduct = count(docs);
+        const docs = await customerController.ListCustomer(filter);
         res.json(docs);
     });
 

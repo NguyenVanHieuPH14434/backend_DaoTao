@@ -7,10 +7,9 @@ export class CustomerController {
 
     async init (){}
 
-    async ListCustomer (filter:any, perPage:number, page:number){
-        const perPages = perPage;
-        const pages = page;
-        return this.model.ListCustomer(filter, perPages, pages);
+    async ListCustomer (filter:any){
+    
+        return this.model.ListCustomer(filter);
     }
 
     async GetCustomer(_id:string){
