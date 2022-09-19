@@ -1,5 +1,8 @@
+import { ErrorCodes, MongoError } from './../lib/mongodb';
 import { MongoDB } from "../lib/mongodb";
 import { AuthSchema } from "./auth";
+import { Code } from 'mongodb';
+import { userInfo } from 'os';
 
 export class AuthModel {
     constructor(private db:MongoDB){}
@@ -19,7 +22,16 @@ export class AuthModel {
     }
 
     async CreateUser (user: AuthSchema.CreateUserParams){
+       try {
         const doc = await this.col_user.insertOne(user);
+        return doc;
+       } catch (err:any) {
+                throw err;
+       }
+    }
+
+    async CheckExits (username: string){
+        const doc = await this.col_user.findOne({username: username});
         return doc;
     }
 
@@ -32,4 +44,6 @@ export class AuthModel {
         const doc = await this.col_user.deleteOne({_id:_id});
         return doc;
     }
+
+  
 }

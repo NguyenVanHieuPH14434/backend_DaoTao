@@ -1,3 +1,5 @@
+import { AuthController } from './auth/auth.controller';
+import { AuthModel } from './auth/auth.model';
 import { CustomerController } from './customer/customer.controller';
 import { CustomerModel } from './customer/customer.model';
 import express from 'express';
@@ -5,6 +7,7 @@ import cors from 'cors';
 import { ReadConfig } from './config';
 import { MongoCommon } from './lib/mongodb';
 import { NewCustomerAPI } from './customer/customer.api';
+import { NewAuthAPI } from './auth/auth.api';
 
 export async function main() {
     const config = await ReadConfig();
@@ -18,6 +21,12 @@ export async function main() {
     await customerModel.init();
     const customerController = new CustomerController(customerModel);
     await customerController.init();
+
+    const authModel = new AuthModel(database);
+    await authModel.init();
+    const authController = new AuthController(authModel);
+    await authController.init();
+
     const app = express();
     const PORT = process.env.PORT || 5000;
     app.use(express.json());
@@ -25,6 +34,7 @@ export async function main() {
     app.disable("x-powered-by");
 
     app.use('/api/customer', NewCustomerAPI(customerController));
+    app.use('/api/auth', NewAuthAPI(authController));
 
     app.listen(PORT, ()=>{
         console.log('Server running!');

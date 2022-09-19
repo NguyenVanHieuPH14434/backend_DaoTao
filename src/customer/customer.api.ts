@@ -2,6 +2,7 @@ import { CustomerController } from './customer.controller';
 import * as express from 'express';
 import { CustomerSchema } from './customer';
 import { count } from 'console';
+import dayjs from 'dayjs';
 
 export function NewCustomerAPI(customerController: CustomerController){
     const router = express.Router();
