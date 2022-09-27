@@ -18,15 +18,21 @@ export function NewCustomerAPI(customerController: CustomerController){
     });
 
     router.post('/create', async(req, res)=>{
-        const params : CustomerSchema.CreateCustomerParams= {
-            linkfb: req.body.linkfb,
-            NameCTV: req.body.NameCTV,
-            Department: req.body.Department,
-            Specialized: req.body.Specialized
-        };
-
-        const doc = await customerController.CreateCustomer(params);
-        res.json(doc);
+        const check = await customerController.CheckExits(req.body.linkfb, req.body.Department);
+        if(check){
+            return res.json({message:'Học viên đã tồn tại trong phòng ban này!'});
+        }else {
+            const params : CustomerSchema.CreateCustomerParams= {
+                linkfb: req.body.linkfb,
+                NameCTV: req.body.NameCTV,
+                Department: req.body.Department,
+                Specialized: req.body.Specialized
+            };
+    
+            const doc = await customerController.CreateCustomer(params);
+            res.json(doc);
+        }
+      
     });
 
     router.post('/update/:_id', async(req, res)=>{

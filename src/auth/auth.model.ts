@@ -45,5 +45,8 @@ export class AuthModel {
         return doc;
     }
 
-  
+    async ImportUser(users:any){
+        const docs = await this.col_user.insertMany(users);
+        return docs;
+    }
 }

@@ -26,6 +26,11 @@ export class CustomerModel {
         return doc;
     }
 
+    async CheckExits (linkfb:string, Department:string) {
+        const doc = await this.col_customer.findOne({linkfb:linkfb, Department:Department});
+        return doc;
+    }
+
     async UpdateCustomer(_id:string, customer: CustomerSchema.UpdateCustomerParams){
         const doc = await this.col_customer.updateOne({_id:_id}, {$set:customer});
         return doc;

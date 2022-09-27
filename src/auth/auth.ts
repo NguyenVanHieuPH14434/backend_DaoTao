@@ -2,13 +2,13 @@ import rand from "../lib/rand";
 
 export namespace AuthSchema {
     export enum Role {
-        ADMIN = 'admin',
-        CTV = 'ctv'
+        Admin = 'admin',
+        Ctv = 'ctv'
     }
 
     export enum Gender {
-        MALE = 'male',
-        FEMALE = 'female'
+        Male = 'male',
+        Female = 'female'
     }
 
     export interface User {

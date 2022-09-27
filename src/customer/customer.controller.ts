@@ -33,6 +33,11 @@ export class CustomerController {
         return customer;
     }
 
+    async CheckExits (linkfb:string, Department:string){
+        const doc = await this.model.CheckExits(linkfb, Department);
+        return doc;
+    }
+
     async UpdateCustomer (_id:string, params: CustomerSchema.UpdateCustomerParams){
         const now = dayjs();
         const nowFormat = now.format('DD/MM/YYYY');

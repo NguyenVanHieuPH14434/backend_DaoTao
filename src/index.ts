@@ -1,3 +1,7 @@
+import { DepartmentController } from './department/department.controller';
+import { DepartmentModel } from './department/department.model';
+import { SpecializedController } from './specialized/specialized.controller';
+import { SpecializedModel } from './specialized/specialized.model';
 import { AuthController } from './auth/auth.controller';
 import { AuthModel } from './auth/auth.model';
 import { CustomerController } from './customer/customer.controller';
@@ -8,6 +12,8 @@ import { ReadConfig } from './config';
 import { MongoCommon } from './lib/mongodb';
 import { NewCustomerAPI } from './customer/customer.api';
 import { NewAuthAPI } from './auth/auth.api';
+import { NewSpecializedAPI } from './specialized/specialized.api';
+import { NewDepartmentAPI } from './department/department.api';
 
 export async function main() {
     const config = await ReadConfig();
@@ -27,6 +33,16 @@ export async function main() {
     const authController = new AuthController(authModel);
     await authController.init();
 
+    const specializedModel = new SpecializedModel(database);
+    await specializedModel.init();
+    const specializedController = new SpecializedController(specializedModel);
+    await specializedController.init();
+
+    const departmentModel = new DepartmentModel(database);
+    await departmentModel.init();
+    const departmentController = new DepartmentController(departmentModel);
+    await departmentController.init();
+
     const app = express();
     const PORT = process.env.PORT || 5000;
     app.use(express.json());
@@ -35,6 +51,8 @@ export async function main() {
 
     app.use('/api/customer', NewCustomerAPI(customerController));
     app.use('/api/auth', NewAuthAPI(authController));
+    app.use('/api/specialized', NewSpecializedAPI(specializedController));
+    app.use('/api/department', NewDepartmentAPI(departmentController));
 
     app.listen(PORT, ()=>{
         console.log('Server running!');

@@ -56,4 +56,10 @@ export class AuthController {
         await this.model.DeleteUser(_id);
         return doc;
     }
+
+    async ImportUser(parmas:any){
+        const users = {...parmas};
+        await this.model.ImportUser(users);
+        return users;
+    }
 }

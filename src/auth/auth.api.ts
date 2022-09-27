@@ -1,13 +1,17 @@
+import { MustBeOneOf } from './../common/http';
 import { verifyToken } from './../common/verifyToken';
 import { AuthController } from './auth.controller';
 import * as express from 'express';
 import { AuthSchema } from './auth';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
 
 
 export function NewAuthAPI (authController: AuthController){
     const router = express.Router();
+    let gender = Object.values(AuthSchema.Gender);
+
 
     router.get('/user/list', async(req, res)=>{
         const docs = await authController.ListUser();
@@ -16,13 +20,12 @@ export function NewAuthAPI (authController: AuthController){
 
     router.post('/user/create', async(req, res)=>{
         const checkExits = await authController.CheckExits(req.body.username);
-
+        let newGender = MustBeOneOf(gender, req.body.gender, 'gender', res);
         if(checkExits){
             res.json({status:201, message:"Username Exits"});
         }else {
             const getRole = req.body.roles;
-            const role = getRole.split('|');
-            const roles : AuthSchema.Role[] = Array.from(new Set(role));
+            const roles : AuthSchema.Role[] = Array.from(new Set(getRole));
             const params : AuthSchema.CreateUserParams ={
                 username: req.body.username,
                 full_name: req.body.full_name,
@@ -30,7 +33,7 @@ export function NewAuthAPI (authController: AuthController){
                 email: req.body.email,
                 phone: req.body.phone,
                 roles: roles,
-                gender: req.body.gender
+                gender: newGender
             };
             const doc = await authController.CreateUser(params);
             res.json(doc);
@@ -38,14 +41,14 @@ export function NewAuthAPI (authController: AuthController){
     });
 
     router.post('/user/update/:_id', async(req, res)=>{
-            const getRole = req.body.roles;
-            const role = getRole.split('|');
-            const roles : AuthSchema.Role[] = Array.from(new Set(role));
+            const getRole = [req.body.roles];
+            let newGender = MustBeOneOf(gender, req.body.gender, 'gender', res);
+            const roles : AuthSchema.Role[] = Array.from(new Set(getRole));
             const params : AuthSchema.UpdateUserParams = {
                 full_name: req.body.full_name,
                 phone: req.body.phone,
                 roles: roles,
-                gender: req.body.gender
+                gender: newGender
             }
             const doc = await authController.UpdateUser(req.params._id, params);
             res.json(doc);
@@ -76,7 +79,6 @@ export function NewAuthAPI (authController: AuthController){
             return res.json({data:{_id:user._id, username: user.username, full_name: user.full_name, roles:user.roles, accesstoken: accesstoken}});
         }
     });
-
 
     return router;
 }
